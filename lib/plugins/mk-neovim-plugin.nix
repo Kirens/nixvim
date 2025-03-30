@@ -56,9 +56,11 @@ let
       opts = lib.getAttrFromPath loc options;
 
       setupCode = ''
+        -- Set up plugin ${moduleName} {{{
         require('${moduleName}')${setup}(${
           lib.optionalString (cfg ? settings) (lib.nixvim.toLuaObject cfg.settings)
         })
+        -- }}}
       '';
 
       luaConfigAtLocation = utils.mkConfigAt configLocation cfg.luaConfig.content;

@@ -242,7 +242,8 @@ lib.nixvim.plugins.mkNeovimPlugin {
   extraConfig = cfg: opts: {
     globals.lz_n = lib.modules.mkAliasAndWrapDefsWithPriority id opts.settings;
     plugins.lz-n.luaConfig.content = mkMerge (
-      optional (cfg.plugins != [ ]) "require('lz.n').load(${toLuaObject cfg.plugins})"
+      ["-- Load specification for lz-n {{{"]
+      ++ optional (cfg.plugins != [ ]) "require('lz.n').load(${toLuaObject cfg.plugins})"
       ++ map (
         {
           plugin,
@@ -254,6 +255,7 @@ lib.nixvim.plugins.mkNeovimPlugin {
         }:
         "require('lz.n').keymap(${toLuaObject plugin}).set(${toLuaObject mode}, ${toLuaObject key}, ${toLuaObject action}, ${toLuaObject options})"
       ) cfg.keymaps
+      ++ ["-- }}}"]
     );
   };
 }

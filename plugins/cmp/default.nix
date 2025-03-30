@@ -72,6 +72,7 @@ lib.nixvim.plugins.mkNeovimPlugin {
   extraConfig = cfg: {
     plugins.cmp.luaConfig.content =
       ''
+        -- Set up plugin cmp {{{
         local cmp = require('cmp')
         cmp.setup(${toLuaObject cfg.settings})
 
@@ -85,6 +86,9 @@ lib.nixvim.plugins.mkNeovimPlugin {
         lib.mapAttrsToList (
           cmdtype: settings: "cmp.setup.cmdline('${cmdtype}', ${toLuaObject settings})\n"
         ) cfg.cmdline
-      ));
+      ))
+      + ''
+        -- }}}
+      '';
   };
 }

@@ -40,7 +40,7 @@
         lib.mkIf (config.highlight != { })
           # lua
           ''
-            -- Highlight groups {{
+            -- Highlight groups {{{
             do
               local highlights = ${lib.nixvim.toLuaObject config.highlight}
 
@@ -48,13 +48,13 @@
                 vim.api.nvim_set_hl(0, k, v)
               end
             end
-            -- }}
+            -- }}}
           '';
       extraConfigLuaPost =
         lib.mkIf (config.highlightOverride != { })
           # lua
           ''
-            -- Highlight groups {{
+            -- Highlight groups {{{
             do
               local highlights = ${lib.nixvim.toLuaObject config.highlightOverride}
 
@@ -62,7 +62,7 @@
                 vim.api.nvim_set_hl(0, k, v)
               end
             end
-            -- }}
+            -- }}}
           '';
     }
     {
@@ -70,7 +70,7 @@
         lib.mkIf (config.match != { })
           # lua
           ''
-            -- Match groups {{
+            -- Match groups {{{
             do
               local match = ${lib.nixvim.toLuaObject config.match}
 
@@ -78,7 +78,7 @@
                 vim.fn.matchadd(k, v)
               end
             end
-              -- }}
+              -- }}}
           '';
     }
   ];

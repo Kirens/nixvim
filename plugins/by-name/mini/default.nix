@@ -103,13 +103,17 @@ lib.nixvim.plugins.mkNeovimPlugin {
     };
 
     plugins.mini.luaConfig.content =
-      lib.foldlAttrs (lines: name: config: ''
+      ''
+        -- Setup for mini.nvim {{{
+      ''
+      +lib.foldlAttrs (lines: name: config: ''
         ${lines}
         require(${lib.nixvim.toLuaObject "mini.${name}"}).setup(${lib.nixvim.toLuaObject config})
       '') "" cfg.modules
       # `MiniIcons` is only in scope if we've called `require('mini.icons')` above
       + lib.optionalString ((cfg.modules ? icons) && cfg.mockDevIcons) ''
         MiniIcons.mock_nvim_web_devicons()
+        -- }}}
       '';
   };
 }

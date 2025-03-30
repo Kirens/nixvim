@@ -56,7 +56,7 @@
 
       extraConfigLuaPost =
         (lib.optionalString (autoGroups != { }) ''
-          -- Set up autogroups {{
+          -- Set up autogroups {{{
           do
             local __nixvim_autogroups = ${lib.nixvim.toLuaObject autoGroups}
 
@@ -64,10 +64,10 @@
               vim.api.nvim_create_augroup(group_name, options)
             end
           end
-          -- }}
+          -- }}}
         '')
         + (lib.optionalString (autoCmd != [ ]) ''
-          -- Set up autocommands {{
+          -- Set up autocommands {{{
           do
             local __nixvim_autocommands = ${lib.nixvim.toLuaObject autoCmd}
 
@@ -87,7 +87,7 @@
               )
             end
           end
-          -- }}
+          -- }}}
         '');
     };
 }

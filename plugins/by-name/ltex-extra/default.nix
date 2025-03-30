@@ -53,7 +53,7 @@ lib.nixvim.plugins.mkNeovimPlugin {
     };
 
     plugins.lsp = {
-      servers.ltex = {
+      servers.ltex_plus = {
         # Enable the ltex language server
         enable = true;
 

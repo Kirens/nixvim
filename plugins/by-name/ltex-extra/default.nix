@@ -4,9 +4,6 @@
   options,
   ...
 }:
-let
-  lspCfg = config.plugins.lsp;
-in
 lib.nixvim.plugins.mkNeovimPlugin {
   name = "ltex-extra";
   package = "ltex_extra-nvim";
@@ -47,13 +44,6 @@ lib.nixvim.plugins.mkNeovimPlugin {
 
   extraConfig = cfg: {
     warnings = lib.nixvim.mkWarnings "plugins.ltex-extra" [
-      {
-        when = !lspCfg.enable;
-        message = ''
-          You have enabled `ltex-extra` but not the lsp (`plugins.lsp`).
-          You should set `plugins.lsp.enable = true` to make use of the LTeX_extra plugin's features.
-        '';
-      }
       (
         let
           expectedDefs = map toString [
@@ -80,7 +70,7 @@ lib.nixvim.plugins.mkNeovimPlugin {
         {
           # TODO: Added 2025-03-30; remove after 25.05
           # Warn if servers.ltex seems to be configured outside of ltex-extra
-          when = !lspCfg.servers.ltex.enable && external != null;
+          when = !config.lsp.servers.ltex.enable && external != null;
           message = ''
             in ${external.file}
             You seem to have configured `plugins.lsp.servers.ltex.${external.name}` for `ltex-extra`.
@@ -91,20 +81,19 @@ lib.nixvim.plugins.mkNeovimPlugin {
       )
     ];
 
-    plugins.lsp =
-      let
-        attachLua = ''
-          require("ltex_extra").setup(${lib.nixvim.toLuaObject cfg.settings})
-        '';
-      in
-      {
-        servers.ltex.onAttach.function = attachLua;
-        servers.ltex_plus = {
-          # Enable ltex_plus if ltex is not already enabled
-          enable = lib.mkIf (!lspCfg.servers.ltex.enable) (lib.mkDefault true);
-          onAttach.function = attachLua;
-        };
+    extraConfigLuaPre = /* lua */ ''
+      function ltex_extra_attach()
+        require("ltex_extra").setup(${lib.nixvim.toLuaObject cfg.settings})
+      end
+    '';
+    lsp = {
+      servers.ltex.config.on_attach.__raw = "ltex_extra_attach";
+      servers.ltex_plus = {
+        # Enable ltex_plus if ltex is not already enabled
+        enable = lib.mkIf (!config.lsp.servers.ltex.enable) (lib.mkDefault true);
+        config.on_attach.__raw = "ltex_extra_attach";
       };
+    };
   };
 
   settingsExample = {

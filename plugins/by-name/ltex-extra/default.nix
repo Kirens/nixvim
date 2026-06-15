@@ -14,10 +14,6 @@ lib.nixvim.plugins.mkNeovimPlugin {
 
   maintainers = [ lib.maintainers.loicreynier ];
 
-  description = ''
-    This plugin works with both the ltex or ltex_plus language servers and will enable ltex_plus if neither are.
-  '';
-
   callSetup = false;
 
   settingsOptions = {
@@ -64,11 +60,11 @@ lib.nixvim.plugins.mkNeovimPlugin {
             ./.
             ../../lsp/language-servers
           ];
-          isExternal = d: !elem d.file expectedDefs;
+          isExternal = d: !lib.elem d.file expectedDefs;
           anyExternal =
             acc: name: v:
             let
-              e = findFirst isExternal null v.definitionsWithLocations;
+              e = lib.findFirst isExternal null v.definitionsWithLocations;
             in
             if acc != null then
               acc
@@ -79,7 +75,7 @@ lib.nixvim.plugins.mkNeovimPlugin {
                 inherit name;
                 inherit (e) file;
               };
-          external = foldlAttrs anyExternal null options.plugins.lsp.servers.ltex;
+          external = lib.foldlAttrs anyExternal null options.plugins.lsp.servers.ltex;
         in
         {
           # TODO: Added 2025-03-30; remove after 25.05
@@ -105,7 +101,7 @@ lib.nixvim.plugins.mkNeovimPlugin {
         servers.ltex.onAttach.function = attachLua;
         servers.ltex_plus = {
           # Enable ltex_plus if ltex is not already enabled
-          enable = mkIf (!lspCfg.servers.ltex.enable) (mkDefault true);
+          enable = lib.mkIf (!lspCfg.servers.ltex.enable) (lib.mkDefault true);
           onAttach.function = attachLua;
         };
       };
